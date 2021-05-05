@@ -29,7 +29,6 @@ class DatabaseControl:
             return sm.StatusModel("Error: Cannot select user from database", 400)
         cursor.close()
         mydb.close()
-        print(str(result))
         return sm.StatusModel(result, 200)
 
     def get_user(self, id:(str, int)) -> sm:
