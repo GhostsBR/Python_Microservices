@@ -47,7 +47,7 @@ class DatabaseControl:
         result = pd.DataFrame(cursor.fetchall(), columns=columns).to_json(orient="records")
         cursor.close()
         mydb.close()
-        res = requests.get('http://localhost:5000/api/v1/users', json={"auth":os.getenv('USER_SYSTEM_AUTH')})
+        res = requests.get(os.getenv(USER_SYSTEM_URL_GET_USERS), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
         users = res.content
         for i in result:
             for x in users:
