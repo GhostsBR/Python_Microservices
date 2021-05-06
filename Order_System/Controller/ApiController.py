@@ -17,8 +17,7 @@ class ApiControl:
 
     def order_list_by_user(self, req:dict) -> sm:
         verify_id = ic.verify_id(req)
-        if verify_id and not verify_id.code == 200:
-            return verify_id
+        if not verify_id: return sm.StatusModel("Error: id is invalid!", 400)
         return db.list_orders_by_user(req['id'])
     
     def order_show(self, req:dict) -> sm:
