@@ -2,6 +2,7 @@ import os
 import mysql.connector
 import pandas as pd
 import requests
+import json
 from ast import literal_eval
 
 from dotenv import load_dotenv
@@ -48,12 +49,14 @@ class DatabaseControl:
         result = pd.DataFrame(cursor.fetchall(), columns=columns).to_json(orient="records")
         cursor.close()
         mydb.close()
-        # res = requests.get(os.getenv('USER_SYSTEM_URL_GET_USERS'), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
-        #users = res.content
-        for item, index in literal_eval(result):
-            for x in users:
-                if i['user_id'] == x['id']:
-                    i.append(x)
+        literal_result = literal_eval(result)
+        res = requests.get(os.getenv('USER_SYSTEM_URL_GET_USERS'), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
+        users = json.loads(res.content)
+        print(len(users))
+        for i in range(len(literal_result)):
+            for x in range(len(users)):
+                if literal_result[i]['user_id'] == users[x]['id']:
+                    print("funfou")
         return sm.StatusModel(result, 200)
 
     def get_order(self, id:(str, int)) -> sm:
