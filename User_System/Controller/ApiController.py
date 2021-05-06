@@ -30,10 +30,15 @@ class ApiControl:
         req['cpf'] = req['cpf'].replace(".", "").replace("-", "")
         return db.insert_user(req)
 
-    def user_update(self) -> sm:
-        pass
+    def user_update(self, req:dict) -> sm:
+        req['updated_at'] = datetime.datetime.now()
+        verify_requirementes = ic.verify_user_requirements(req)
+        if verify_requirementes and not verify_requirementes.code == 200:
+            return verify_requirementes
+        return db.update_user(req)
 
-    def user_remove(self) -> sm:
+    def user_remove(self, req:dict) -> sm:
         verify_id = ic.verify_id(req)
-        if verify_id and not verify_id.code == 200:
-            return verify_id
+        if verify_id and not verify_id.code == 200: return verify_id
+        return db.remove_user(req)
+        

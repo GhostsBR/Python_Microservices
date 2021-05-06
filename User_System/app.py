@@ -37,10 +37,7 @@ def user_route():
             return 'Error: Cannot convert data into json!', 400
         if not ic.verify_auth(req): return "Error: Authentication failed!", 401
         result = ac.user_show(req)
-        if result.code == '200':
-            return result.content, result.code
-        else:
-            return result.content, result.code
+        return result.content, result.code
     elif request.method == 'POST':
         try:
             req = request.data.decode("utf-8")
@@ -58,8 +55,9 @@ def user_route():
             req = dict(req)
         except:
             return 'Error: Cannot convert data into json!', 400
-        if not ic.verify_auth(req):  return"Error: Authentication failed!", 401
-        return ac.user_update()
+        if not ic.verify_auth(req): return "Error: Authentication failed!", 401
+        result = ac.user_update(req)
+        return result.content, result.code
     elif request.method == 'DELETE':
         try:
             req = request.data.decode("utf-8")
@@ -68,8 +66,9 @@ def user_route():
         except:
             return 'Error: Cannot convert data into json!', 400
         if not ic.verify_auth(req): return "Error: Authentication failed!", 401
-        return ac.user_remove()
+        result = ac.user_remove(req)
+        return result.content, result.code
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=os.getenv('PORT'))
+    app.run(debug=True, host=os.getenv('DOMAIN'), port=os.getenv('PORT'))
