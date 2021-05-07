@@ -29,7 +29,14 @@ class DatabaseControl:
         result = pd.DataFrame(cursor.fetchall(), columns=columns).to_json(orient="records")
         cursor.close()
         mydb.close()
-        return sm.StatusModel(result, 200)
+        literal_result = literal_eval(result)
+        res = requests.get(os.getenv('USER_SYSTEM_URL_GET_USERS'), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
+        users = json.loads(res.content)
+        for i in range(len(literal_result)):
+            for x in range(len(users)):
+                if literal_result[i]['user_id'] == users[x]['id']:
+                    literal_result[i]['user_info'] = users[x]
+        return sm.StatusModel(json.dumps(literal_result), 200)
 
     def list_orders_by_user(self, id) -> sm:
         try:
@@ -52,12 +59,11 @@ class DatabaseControl:
         literal_result = literal_eval(result)
         res = requests.get(os.getenv('USER_SYSTEM_URL_GET_USERS'), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
         users = json.loads(res.content)
-        print(len(users))
         for i in range(len(literal_result)):
             for x in range(len(users)):
                 if literal_result[i]['user_id'] == users[x]['id']:
-                    print("funfou")
-        return sm.StatusModel(result, 200)
+                    literal_result[i]['user_info'] = users[x]
+        return sm.StatusModel(json.dumps(literal_result), 200)
 
     def get_order(self, id:(str, int)) -> sm:
         try:
@@ -77,7 +83,14 @@ class DatabaseControl:
         result = pd.DataFrame(cursor.fetchall(), columns=columns).to_json(orient="records")
         cursor.close()
         mydb.close()
-        return sm.StatusModel(result, 200)
+        literal_result = literal_eval(result)
+        res = requests.get(os.getenv('USER_SYSTEM_URL_GET_USERS'), json={"auth":os.getenv('USER_SYSTEM_AUTH')})
+        users = json.loads(res.content)
+        for i in range(len(literal_result)):
+            for x in range(len(users)):
+                if literal_result[i]['user_id'] == users[x]['id']:
+                    literal_result[i]['user_info'] = users[x]
+        return sm.StatusModel(json.dumps(literal_result), 200)
     
     def insert_order(self, req:dict) -> sm:
         try:
@@ -103,6 +116,7 @@ class DatabaseControl:
             return sm.StatusModel("Success: Order created with success!", 200)
         else:
             return sm.StatusModel("Error: No record inserted!", 500)
+
     def update_order(self, req:dict) -> sm:
         try:
             mydb = mysql.connector.connect(
